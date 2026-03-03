@@ -1,0 +1,43 @@
+{
+  "$schema": "https://tree-sitter.github.io/tree-sitter/assets/schemas/config.schema.json",
+  "grammars": [
+    {
+      "name": "metamath_zero",
+      "camelcase": "MetamathZero",
+      "title": "Metamath Zero",
+      "scope": "source.mm0",
+      "file-types": [
+        "mm0",
+        "mm1"
+      ],
+      "injection-regex": "^metamath_zero$",
+      "class-name": "TreeSitterMetamathZero"
+    }
+  ],
+  "metadata": {
+    "version": "0.1.0",
+    "license": "MIT",
+    "description": "A parser for the Metamath Zero language",
+    "authors": [
+      {
+        "name": "Daria Sukhonina",
+        "email": "dariasukhonina@gmail.com",
+        "url": "https://github.com/zetanumbers"
+      }
+    ],
+    "links": {
+      "repository": "https://github.com/zetanumbers/tree-sitter-mm0",
+      "funding": ""
+    }
+  },
+  "bindings": {
+    "c": true,
+    "go": false,
+    "java": false,
+    "node": false,
+    "python": false,
+    "rust": true,
+    "swift": false,
+    "zig": false
+  }
+}
