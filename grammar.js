@@ -56,7 +56,14 @@ export default grammar({
     ),
     formula: $ => $.math_string,
 
-    def_stmt: $ => 'def',
+    def_stmt: $ => seq('def', field('name', $.identifier), repeat($.dummy_binder), ':',
+      $.type, optional(seq('=', $.formula)), ';'),
+    dummy_binder: $ => choice(
+      seq('{', field('arguments', $.dummy_argument_list), ':', $.type, '}'),
+      seq('(', field('arguments', $.dummy_argument_list), ':', $.type, ')')
+    ),
+    dummy_argument_list: $ => repeat1(seq(optional('.'), $.identifier)),
+
     notation_stmt: $ => 'notation',
     inout_stmt: $ => 'inout',
 
@@ -64,11 +71,13 @@ export default grammar({
 
     math_string: $ => seq('$', repeat($.math_token), '$'),
     math_token: $ => choice(
-      prec(3, $.identifier),
-      prec(2, $.number),
+      prec(4, $.identifier),
+      prec(3, $.number),
+      prec(2, $.math_bang_token),
       prec(1, seq('(', repeat($.math_token), ')')),
       /[^a-zA-Z_\$\(\)]/
     ),
+    math_bang_token: $ => seq('(', '!', repeat($.math_token), ')'),
 
     identifier: $ => /[_\p{XID_Start}][_\p{XID_Continue}]*/,
     number: $ => /\d+/,

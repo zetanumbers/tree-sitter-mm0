@@ -70,6 +70,81 @@
     "fields": {}
   },
   {
+    "type": "def_stmt",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "dummy_binder",
+          "named": true
+        },
+        {
+          "type": "formula",
+          "named": true
+        },
+        {
+          "type": "type",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "dummy_argument_list",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "dummy_binder",
+    "named": true,
+    "fields": {
+      "arguments": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "dummy_argument_list",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "type",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "formula",
     "named": true,
     "fields": {},
@@ -138,6 +213,21 @@
     }
   },
   {
+    "type": "math_bang_token",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "math_token",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "math_string",
     "named": true,
     "fields": {},
@@ -162,6 +252,10 @@
       "types": [
         {
           "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "math_bang_token",
           "named": true
         },
         {
@@ -340,6 +434,10 @@
     }
   },
   {
+    "type": "!",
+    "named": false
+  },
+  {
     "type": "$",
     "named": false
   },
@@ -356,11 +454,19 @@
     "named": false
   },
   {
+    "type": ".",
+    "named": false
+  },
+  {
     "type": ":",
     "named": false
   },
   {
     "type": ";",
+    "named": false
+  },
+  {
+    "type": "=",
     "named": false
   },
   {
@@ -372,8 +478,8 @@
     "named": false
   },
   {
-    "type": "def_stmt",
-    "named": true
+    "type": "def",
+    "named": false
   },
   {
     "type": "free",
