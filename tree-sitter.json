@@ -10,8 +10,10 @@
         "mm0",
         "mm1"
       ],
-      "injection-regex": "^metamath_zero$",
-      "class-name": "TreeSitterMetamathZero"
+      "injection-regex": "^(mm0|metamath_zero)$",
+      "class-name": "TreeSitterMetamathZero",
+      "highlights": "queries/highlights.scm",
+      "locals": "queries/locals.scm"
     }
   ],
   "metadata": {
@@ -26,8 +28,7 @@
       }
     ],
     "links": {
-      "repository": "https://github.com/zetanumbers/tree-sitter-mm0",
-      "funding": ""
+      "repository": "https://github.com/zetanumbers/tree-sitter-mm0"
     }
   },
   "bindings": {
