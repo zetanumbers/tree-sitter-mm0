@@ -1,3 +1,4 @@
 (term_stmt) @local.scope
-(variable_list (identifier) @local.definition)
+(assert_stmt) @local.scope
+(argument_list (identifier) @local.definition.variable.parameter)
 (identifier) @local.reference

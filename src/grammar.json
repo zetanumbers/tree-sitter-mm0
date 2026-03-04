@@ -144,11 +144,29 @@
       ]
     },
     "type": {
-      "type": "REPEAT1",
-      "content": {
-        "type": "SYMBOL",
-        "name": "identifier"
-      }
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "FIELD",
+          "name": "sort_name",
+          "content": {
+            "type": "SYMBOL",
+            "name": "identifier"
+          }
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "type_variables"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        }
+      ]
     },
     "type_binder": {
       "type": "CHOICE",
@@ -165,7 +183,7 @@
               "name": "arguments",
               "content": {
                 "type": "SYMBOL",
-                "name": "variable_list"
+                "name": "argument_list"
               }
             },
             {
@@ -194,7 +212,7 @@
               "name": "arguments",
               "content": {
                 "type": "SYMBOL",
-                "name": "variable_list"
+                "name": "argument_list"
               }
             },
             {
@@ -238,6 +256,13 @@
           ]
         }
       ]
+    },
+    "type_variables": {
+      "type": "REPEAT1",
+      "content": {
+        "type": "SYMBOL",
+        "name": "identifier"
+      }
     },
     "assert_stmt": {
       "type": "SEQ",
@@ -299,7 +324,7 @@
               "name": "arguments",
               "content": {
                 "type": "SYMBOL",
-                "name": "variable_list"
+                "name": "argument_list"
               }
             },
             {
@@ -328,7 +353,7 @@
               "name": "arguments",
               "content": {
                 "type": "SYMBOL",
-                "name": "variable_list"
+                "name": "argument_list"
               }
             },
             {
@@ -407,7 +432,7 @@
       "type": "STRING",
       "value": "inout"
     },
-    "variable_list": {
+    "argument_list": {
       "type": "REPEAT1",
       "content": {
         "type": "SYMBOL",
@@ -449,6 +474,14 @@
           "type": "PREC",
           "value": 2,
           "content": {
+            "type": "SYMBOL",
+            "name": "number"
+          }
+        },
+        {
+          "type": "PREC",
+          "value": 1,
+          "content": {
             "type": "SEQ",
             "members": [
               {
@@ -470,25 +503,8 @@
           }
         },
         {
-          "type": "PREC",
-          "value": 1,
-          "content": {
-            "type": "CHOICE",
-            "members": [
-              {
-                "type": "STRING",
-                "value": "="
-              },
-              {
-                "type": "STRING",
-                "value": ":"
-              },
-              {
-                "type": "STRING",
-                "value": "+"
-              }
-            ]
-          }
+          "type": "PATTERN",
+          "value": "[^a-zA-Z_\\$\\(\\)]"
         }
       ]
     },
@@ -498,7 +514,7 @@
     },
     "number": {
       "type": "PATTERN",
-      "value": "0|[1-9][0-9]*"
+      "value": "\\d+"
     },
     "comment": {
       "type": "SEQ",

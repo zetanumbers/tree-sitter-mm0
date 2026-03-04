@@ -1,5 +1,20 @@
 [
   {
+    "type": "argument_list",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "arrow_type",
     "named": true,
     "fields": {},
@@ -101,7 +116,7 @@
         "required": true,
         "types": [
           {
-            "type": "variable_list",
+            "type": "argument_list",
             "named": true
           }
         ]
@@ -151,6 +166,10 @@
         },
         {
           "type": "math_token",
+          "named": true
+        },
+        {
+          "type": "number",
           "named": true
         }
       ]
@@ -256,13 +275,24 @@
   {
     "type": "type",
     "named": true,
-    "fields": {},
+    "fields": {
+      "sort_name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
-      "multiple": true,
-      "required": true,
+      "multiple": false,
+      "required": false,
       "types": [
         {
-          "type": "identifier",
+          "type": "type_variables",
           "named": true
         }
       ]
@@ -277,7 +307,7 @@
         "required": true,
         "types": [
           {
-            "type": "variable_list",
+            "type": "argument_list",
             "named": true
           }
         ]
@@ -295,7 +325,7 @@
     }
   },
   {
-    "type": "variable_list",
+    "type": "type_variables",
     "named": true,
     "fields": {},
     "children": {
@@ -322,10 +352,6 @@
     "named": false
   },
   {
-    "type": "+",
-    "named": false
-  },
-  {
     "type": "--",
     "named": false
   },
@@ -335,10 +361,6 @@
   },
   {
     "type": ";",
-    "named": false
-  },
-  {
-    "type": "=",
     "named": false
   },
   {
@@ -367,6 +389,10 @@
   },
   {
     "type": "notation_stmt",
+    "named": true
+  },
+  {
+    "type": "number",
     "named": true
   },
   {

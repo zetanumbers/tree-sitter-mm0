@@ -1,22 +1,21 @@
-";" @punctuation.delimiter
-
-"(" @punctuation.bracket
-")" @punctuation.bracket
-"{" @punctuation.bracket
-"}" @punctuation.bracket
-
 "pure" @keyword
 "strict" @keyword
 "provable" @keyword
 "free" @keyword
-"sort" @keyword
+"sort" @keyword.storage
 "term" @keyword
+"axiom" @keyword
+"theorem" @keyword
 
 (sort_stmt name: (identifier) @type)
 (term_stmt name: (identifier) @constructor)
+(assert_stmt name: (identifier) @function)
 
-(variable_list (identifier) @variable.parameter)
+(argument_list (identifier) @variable.parameter)
 
-(type) @type
+(type sort_name: (identifier) @type)
+
+(arrow_type ">" @operator)
+(formula_arrow_type ">" @operator)
 
 (comment) @comment

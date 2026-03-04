@@ -33,12 +33,13 @@ export default grammar({
     ),
 
     term_stmt: $ => seq('term', field('name', $.identifier), repeat($.type_binder), ':', $.arrow_type, ';'),
-    type: $ => repeat1($.identifier),
+    type: $ => seq(field('sort_name', $.identifier), optional($.type_variables)),
     type_binder: $ => choice(
-      seq('{', field('arguments', $.variable_list), ':', $.type, '}'),
-      seq('(', field('arguments', $.variable_list), ':', $.type, ')')
+      seq('{', field('arguments', $.argument_list), ':', $.type, '}'),
+      seq('(', field('arguments', $.argument_list), ':', $.type, ')')
     ),
     arrow_type: $ => choice($.type, seq($.type, '>', $.arrow_type)),
+    type_variables: $ => repeat1($.identifier),
 
     assert_stmt: $ => seq(
       choice('axiom', 'theorem'),
@@ -47,8 +48,8 @@ export default grammar({
       $.formula_arrow_type, ';'
     ),
     formula_type_binder: $ => choice(
-      seq('{', field('arguments', $.variable_list), ':', $.type, '}'),
-      seq('(', field('arguments', $.variable_list), ':', choice($.type, $.formula), ')')),
+      seq('{', field('arguments', $.argument_list), ':', $.type, '}'),
+      seq('(', field('arguments', $.argument_list), ':', choice($.type, $.formula), ')')),
     formula_arrow_type: $ => choice(
       $.formula,
       seq(choice($.type, $.formula), '>', $.formula_arrow_type)
@@ -59,17 +60,18 @@ export default grammar({
     notation_stmt: $ => 'notation',
     inout_stmt: $ => 'inout',
 
-    variable_list: $ => repeat1($.identifier),
+    argument_list: $ => repeat1($.identifier),
 
     math_string: $ => seq('$', repeat($.math_token), '$'),
     math_token: $ => choice(
       prec(3, $.identifier),
-      prec(2, seq('(', repeat($.math_token), ')')),
-      prec(1, choice('=', ':', '+'))
+      prec(2, $.number),
+      prec(1, seq('(', repeat($.math_token), ')')),
+      /[^a-zA-Z_\$\(\)]/
     ),
 
     identifier: $ => /[_\p{XID_Start}][_\p{XID_Continue}]*/,
-    number: $ => /0|[1-9][0-9]*/,
+    number: $ => /\d+/,
 
     comment: $ => seq(
       '--',
