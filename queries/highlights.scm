@@ -21,6 +21,5 @@
 (arrow_type ">" @operator)
 (formula_arrow_type ">" @operator)
 (def_stmt "=" @operator)
-(math_bang_token "!" @function.builtin)
 
 (comment) @comment

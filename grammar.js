@@ -71,13 +71,11 @@ export default grammar({
 
     math_string: $ => seq('$', repeat($.math_token), '$'),
     math_token: $ => choice(
-      prec(4, $.identifier),
-      prec(3, $.number),
-      prec(2, $.math_bang_token),
+      prec(3, $.identifier),
+      prec(2, $.number),
       prec(1, seq('(', repeat($.math_token), ')')),
       /[^a-zA-Z_\$\(\)]/
     ),
-    math_bang_token: $ => seq('(', '!', repeat($.math_token), ')'),
 
     identifier: $ => /[_\p{XID_Start}][_\p{XID_Continue}]*/,
     number: $ => /\d+/,

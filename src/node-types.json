@@ -213,21 +213,6 @@
     }
   },
   {
-    "type": "math_bang_token",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": false,
-      "types": [
-        {
-          "type": "math_token",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
     "type": "math_string",
     "named": true,
     "fields": {},
@@ -252,10 +237,6 @@
       "types": [
         {
           "type": "identifier",
-          "named": true
-        },
-        {
-          "type": "math_bang_token",
           "named": true
         },
         {
@@ -432,10 +413,6 @@
         }
       ]
     }
-  },
-  {
-    "type": "!",
-    "named": false
   },
   {
     "type": "$",

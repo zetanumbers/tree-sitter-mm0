@@ -604,7 +604,7 @@
       "members": [
         {
           "type": "PREC",
-          "value": 4,
+          "value": 3,
           "content": {
             "type": "SYMBOL",
             "name": "identifier"
@@ -612,18 +612,10 @@
         },
         {
           "type": "PREC",
-          "value": 3,
-          "content": {
-            "type": "SYMBOL",
-            "name": "number"
-          }
-        },
-        {
-          "type": "PREC",
           "value": 2,
           "content": {
             "type": "SYMBOL",
-            "name": "math_bang_token"
+            "name": "number"
           }
         },
         {
@@ -653,30 +645,6 @@
         {
           "type": "PATTERN",
           "value": "[^a-zA-Z_\\$\\(\\)]"
-        }
-      ]
-    },
-    "math_bang_token": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "STRING",
-          "value": "("
-        },
-        {
-          "type": "STRING",
-          "value": "!"
-        },
-        {
-          "type": "REPEAT",
-          "content": {
-            "type": "SYMBOL",
-            "name": "math_token"
-          }
-        },
-        {
-          "type": "STRING",
-          "value": ")"
         }
       ]
     },
