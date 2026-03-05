@@ -1,3 +1,5 @@
+["(" ")" "{" "}" "$"] @punctuation.bracket
+
 ["pure" "strict" "provable" "free"] @keyword.storage.modifier
 "sort" @keyword.storage
 
@@ -27,8 +29,6 @@
 (gen_notation_stmt "=" @operator)
 
 (math_token (identifier) @function (#is-not? local))
-[(other_math_token) (unbalanced_math_lexeme)] @operator
-(math_token ["(" ")"] @operator)
 
 (number) @constant.numeric
 
