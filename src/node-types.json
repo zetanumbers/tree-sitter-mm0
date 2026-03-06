@@ -317,6 +317,63 @@
     }
   },
   {
+    "type": "inout_stmt",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "input_stmt",
+          "named": true
+        },
+        {
+          "type": "output_stmt",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "input_kind",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "input_stmt",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "input_kind",
+          "named": true
+        },
+        {
+          "type": "math_string",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "math_string",
     "named": true,
     "fields": {},
@@ -399,6 +456,44 @@
         },
         {
           "type": "simple_notation_stmt",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "output_kind",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "output_stmt",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "math_string",
+          "named": true
+        },
+        {
+          "type": "output_kind",
           "named": true
         }
       ]
@@ -716,8 +811,8 @@
     "named": false
   },
   {
-    "type": "inout_stmt",
-    "named": true
+    "type": "input",
+    "named": false
   },
   {
     "type": "max",
@@ -734,6 +829,10 @@
   {
     "type": "other_math_token",
     "named": true
+  },
+  {
+    "type": "output",
+    "named": false
   },
   {
     "type": "prec",

@@ -91,7 +91,11 @@ export default grammar({
     notation_literal: $ => choice($.prec_constant, $.identifier),
     prec_constant: $ => seq('(', $.constant, ':', $.precedence_lvl, ')'),
 
-    inout_stmt: $ => 'inout',
+    inout_stmt: $ => choice($.input_stmt, $.output_stmt),
+    input_stmt: $ => seq('input', $.input_kind, ':', repeat(choice($.identifier, $.math_string)), ';'),
+    output_stmt: $ => seq('output', $.output_kind, ':', repeat(choice($.identifier, $.math_string)), ';'),
+    input_kind: $ => $.identifier,
+    output_kind: $ => $.identifier,
 
     argument_list: $ => repeat1($.identifier),
 
