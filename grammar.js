@@ -19,9 +19,7 @@ export default grammar({
     source_file: $ => repeat($.statement),
 
     statement: $ => choice(
-      $.sort_stmt,
-      $.term_stmt,
-      $.assert_stmt,
+      $.decl_stmt,
       $.def_stmt,
       $.notation_stmt,
       $.inout_stmt
@@ -31,6 +29,34 @@ export default grammar({
       optional('pure'), optional('strict'), optional('provable'), optional('free'),
       'sort', field('name', $.identifier), ';',
     ),
+
+
+    decl_stmt: $ => seq(
+      optional($.visibility), $.decl_kind, $.identifier, repeat(seq($.binder)),
+      optional(seq(':', $.arrow_type)), optional(seq('=', $.sexpr)), ';'
+    ),
+    visibility: $ => choice('pub', 'abstract', 'local'),
+    decl_kind: $ => choice('term', 'axiom', 'def', 'theorem'),
+    type_or_fmla: $ => choice($.type, $.formula),
+    binder: $ => choice(
+      seq('{', repeat(seq($.var_decl)), optional(seq(':', $.type_or_fmla)), '}'),
+      seq('(', repeat(seq($.var_decl)), optional(seq(':', $.type_or_fmla)), ')'),
+    ),
+    var_decl: $ => seq(optional('.'), $.identifier),
+    arrow_type: $ => choice($.type_or_fmla, seq($.type_or_fmla, '>', $.arrow_type)),
+
+    do_stmt: $ => seq('do', choice(seq('{', repeat($.sexpr), '}'), $.sexpr), ';'),
+
+    sexpr: $ => choice($.atom, $.list, $.number, $.string, $.bool, '#undef', $.formula, seq("'", $.sexpr), seq(',', $.sexpr)),
+    atom: $ => choice(seq($.initial, repeat($.subsequent)), '+', '-', '...', seq('->', repeat($.subsequent))),
+    initial: $ =>    [a-z] | [A-Z] |         [!%&*/:<=>?^_~]
+    subsequent: $ => [a-z] | [A-Z] | [0-9] | [!%&*/:<=>?^_~+-.@]
+    list: $ => '(' list_inner ')' | '[' list_inner ']'
+    list_inner: $ => (sexpr)* | (sexpr)+ '.' sexpr
+    number: $ => [0-9]+ | 0[xX][0-9a-fA-F]+
+    string: $ => '"' (char)* '"'
+    char: $ => <any character other than " and \ > | '\"' | '\\' | '\n' | '\r'
+    bool: $ => choice('#t', '#f'),
 
     term_stmt: $ => seq('term', field('name', $.identifier), repeat($.type_binder), ':', $.arrow_type, ';'),
     type: $ => seq(field('sort_name', $.identifier), optional($.type_variables)),
