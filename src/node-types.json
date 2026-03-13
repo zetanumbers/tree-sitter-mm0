@@ -626,10 +626,6 @@
       "required": false,
       "types": [
         {
-          "type": "import_stmt",
-          "named": true
-        },
-        {
           "type": "statement",
           "named": true
         }
@@ -654,6 +650,10 @@
         },
         {
           "type": "do_stmt",
+          "named": true
+        },
+        {
+          "type": "import_stmt",
           "named": true
         },
         {

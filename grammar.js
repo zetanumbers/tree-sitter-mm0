@@ -16,9 +16,10 @@ export default grammar({
   ],
 
   rules: {
-    source_file: $ => seq(repeat($.import_stmt), repeat($.statement)),
+    source_file: $ => repeat($.statement),
 
     statement: $ => choice(
+      $.import_stmt,
       $.sort_stmt,
       $.decl_stmt,
       $.notation_stmt,
