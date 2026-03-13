@@ -16,14 +16,18 @@ export default grammar({
   ],
 
   rules: {
-    source_file: $ => repeat($.statement),
+    source_file: $ => seq(repeat($.import_stmt), repeat($.statement)),
 
     statement: $ => choice(
       $.sort_stmt,
       $.decl_stmt,
       $.notation_stmt,
       $.inout_stmt,
+      $.do_stmt,
+      $.annot_stmt,
     ),
+
+    import_stmt: $ => seq('import', /"[^"]*"/, ';'),
 
     sort_stmt: $ => seq(
       optional('pure'), optional('strict'), optional('provable'), optional('free'),
@@ -44,51 +48,37 @@ export default grammar({
     var_decl: $ => seq(optional('.'), $.identifier),
     arrow_type: $ => choice($.type_or_fmla, seq($.type_or_fmla, '>', $.arrow_type)),
 
-    do_stmt: $ => seq('do', choice(seq('{', repeat($.sexpr), '}'), $.sexpr), ';'),
+    annot_stmt: $ => seq('@', $.sexpr, $.statement),
+    
+    do_stmt: $ => seq('do', $.sexpr, ';'),
 
-    sexpr: $ => choice($.atom, $.list, $.number, $.string, $.bool, '#undef', $.formula, seq("'", $.sexpr), seq(',', $.sexpr)),
-    atom: $ => choice(seq($.initial, repeat($.subsequent)), '+', '-', '...', seq('->', repeat($.subsequent))),
-    initial: $ => /[a-zA-Z!%&*/:<=>?\^_~]/,
-    subsequent: $ => /[a-zA-Z0-9!%&*/:<=>?\^_~+\-.@]/,
-    list: $ => choice(seq('(', optional($.list_inner), ')'), seq('[', optional($.list_inner), ']')),
-    list_inner: $ => choice(repeat1($.sexpr), seq(repeat1($.sexpr), '.', $.sexpr)),
+    sexpr: $ => choice($.atom,
+      $.list,
+      $.number,
+      $.string,
+      $.bool,
+      '#undef',
+      $.formula,
+      seq("'", $.sexpr),
+      seq(',', $.sexpr),
+    ),
+    atom: $ => choice($.atom_identifier, '+', '-', '...', $.atom_arrow_identifier),
+    atom_identifier: $ => /[a-zA-Z!%&*/:<=>?\^_~][a-zA-Z0-9!%&*/:<=>?\^_~+\-.@]*/,
+    atom_arrow_identifier: $ => /->[a-zA-Z0-9!%&*/:<=>?\^_~+\-.@]*/,
+    list: $ => choice(
+      seq('(', optional($.list_inner), ')'),
+      seq('[', optional($.list_inner), ']'),
+      seq('{', optional($.list_inner), '}'),
+    ),
+    list_inner: $ => seq(repeat1($.sexpr), optional(seq('.', $.sexpr)), optional(seq('@', $.list_inner))),
     number: $ => choice(/[0-9]+/, /0[xX][0-9a-fA-F]+/),
-    string: $ => seq('"', repeat($.char), '"'),
-    char: $ => choice(/[^\"\\]/, '\\"', '\\\\', '\\n', '\\r'),
+    string: $ => seq('"', repeat($._char), '"'),
+    _char: $ => token.immediate(choice(/[^"\\]/, '\\"', '\\\\', '\\n', '\\r')),
     bool: $ => choice('#t', '#f'),
 
-    term_stmt: $ => seq('term', field('name', $.identifier), repeat($.type_binder), ':', $.arrow_type, ';'),
     type: $ => seq(field('sort_name', $.identifier), optional($.type_variables)),
-    type_binder: $ => choice(
-      seq('{', field('arguments', $.argument_list), ':', $.type, '}'),
-      seq('(', field('arguments', $.argument_list), ':', $.type, ')'),
-    ),
-    arrow_type: $ => choice($.type, seq($.type, '>', $.arrow_type)),
     type_variables: $ => repeat1($.identifier),
-
-    assert_stmt: $ => seq(
-      choice('axiom', 'theorem'),
-      field('name', $.identifier),
-      repeat($.formula_type_binder), ':',
-      $.formula_arrow_type, ';',
-    ),
-    formula_type_binder: $ => choice(
-      seq('{', field('arguments', $.argument_list), ':', $.type, '}'),
-      seq('(', field('arguments', $.argument_list), ':', choice($.type, $.formula), ')'),
-    ),
-    formula_arrow_type: $ => choice(
-      $.formula,
-      seq(choice($.type, $.formula), '>', $.formula_arrow_type),
-    ),
     formula: $ => $.math_string,
-
-    def_stmt: $ => seq('def', field('name', $.identifier), repeat($.dummy_binder), ':',
-      $.type, optional(seq('=', $.formula)), ';'),
-    dummy_binder: $ => choice(
-      seq('{', field('arguments', $.dummy_argument_list), ':', $.type, '}'),
-      seq('(', field('arguments', $.dummy_argument_list), ':', $.type, ')'),
-    ),
-    dummy_argument_list: $ => repeat1(seq(optional('.'), $.identifier)),
 
     notation_stmt: $ => choice($.delimiter_stmt, $.simple_notation_stmt, $.coercion_stmt, $.gen_notation_stmt),
     delimiter_stmt: $ => seq(
@@ -101,7 +91,7 @@ export default grammar({
       choice('infixl', 'infixr', 'prefix'), field('name', $.identifier), ':',
       $.constant, 'prec', $.precedence_lvl, ';',
     ),
-    constant: $ => $.math_string,
+    constant: $ => $.unbalanced_math_string,
     precedence_lvl: $ => choice($.number, 'max'),
     coercion_stmt: $ => seq(
       'coercion',
@@ -112,7 +102,16 @@ export default grammar({
       field('right_sort', $.identifier),
       ';',
     ),
-    gen_notation_stmt: $ => seq('notation', field('name', $.identifier), repeat($.type_binder), ':', $.type, '=', $.prec_constant, repeat($.notation_literal), ';'),
+    gen_notation_stmt: $ => seq(
+      'notation',
+      field('name', $.identifier),
+      repeat($.binder),
+      optional(seq(':', $.type)),
+      '=',
+      repeat1($.notation_literal),
+      optional(seq(':', $.precedence_lvl, choice('lassoc', 'rassoc'))),
+      ';'
+    ),
     notation_literal: $ => choice($.prec_constant, $.identifier),
     prec_constant: $ => seq('(', $.constant, ':', $.precedence_lvl, ')'),
 
@@ -122,18 +121,17 @@ export default grammar({
     input_kind: $ => $.identifier,
     output_kind: $ => $.identifier,
 
-    argument_list: $ => repeat1($.identifier),
-
     unbalanced_math_string: $ => seq('$', repeat($.unbalanced_math_lexeme), '$'),
-    unbalanced_math_lexeme: $ => /[^a-zA-Z0-9\s\$]/,
+    unbalanced_math_lexeme: $ => /[^\s\$]/,
 
     math_string: $ => seq('$', repeat($.math_token), '$'),
     math_token: $ => choice(
       prec(3, $.identifier),
       prec(2, $.number),
-      prec(1, seq('(', repeat($.math_token), ')')),
+      prec(1, $.math_token_list),
       $.other_math_token,
     ),
+    math_token_list: $ => seq('(', repeat($.math_token), ')'),
     other_math_token: $ => /[^a-zA-Z0-9\s_\$\(\)]+/,
 
     identifier: $ => /[_\p{XID_Start}][_\p{XID_Continue}]*/,

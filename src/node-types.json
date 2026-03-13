@@ -1,6 +1,6 @@
 [
   {
-    "type": "argument_list",
+    "type": "annot_stmt",
     "named": true,
     "fields": {},
     "children": {
@@ -8,7 +8,11 @@
       "required": true,
       "types": [
         {
-          "type": "identifier",
+          "type": "sexpr",
+          "named": true
+        },
+        {
+          "type": "statement",
           "named": true
         }
       ]
@@ -27,7 +31,7 @@
           "named": true
         },
         {
-          "type": "type",
+          "type": "type_or_fmla",
           "named": true
         }
       ]
@@ -38,15 +42,15 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": true,
+      "multiple": false,
       "required": false,
       "types": [
         {
-          "type": "initial",
+          "type": "atom_arrow_identifier",
           "named": true
         },
         {
-          "type": "subsequent",
+          "type": "atom_identifier",
           "named": true
         }
       ]
@@ -73,11 +77,6 @@
   },
   {
     "type": "bool",
-    "named": true,
-    "fields": {}
-  },
-  {
-    "type": "char",
     "named": true,
     "fields": {}
   },
@@ -132,7 +131,7 @@
       "required": true,
       "types": [
         {
-          "type": "math_string",
+          "type": "unbalanced_math_string",
           "named": true
         }
       ]
@@ -194,6 +193,21 @@
     }
   },
   {
+    "type": "do_stmt",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "sexpr",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "formula",
     "named": true,
     "fields": {},
@@ -228,23 +242,28 @@
       "required": true,
       "types": [
         {
+          "type": "binder",
+          "named": true
+        },
+        {
           "type": "notation_literal",
           "named": true
         },
         {
-          "type": "prec_constant",
+          "type": "precedence_lvl",
           "named": true
         },
         {
           "type": "type",
           "named": true
-        },
-        {
-          "type": "type_binder",
-          "named": true
         }
       ]
     }
+  },
+  {
+    "type": "import_stmt",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "inout_stmt",
@@ -327,6 +346,10 @@
       "required": true,
       "types": [
         {
+          "type": "list_inner",
+          "named": true
+        },
+        {
           "type": "sexpr",
           "named": true
         }
@@ -353,15 +376,15 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": true,
-      "required": false,
+      "multiple": false,
+      "required": true,
       "types": [
         {
           "type": "identifier",
           "named": true
         },
         {
-          "type": "math_token",
+          "type": "math_token_list",
           "named": true
         },
         {
@@ -370,6 +393,21 @@
         },
         {
           "type": "other_math_token",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "math_token_list",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "math_token",
           "named": true
         }
       ]
@@ -588,6 +626,10 @@
       "required": false,
       "types": [
         {
+          "type": "import_stmt",
+          "named": true
+        },
+        {
           "type": "statement",
           "named": true
         }
@@ -603,7 +645,15 @@
       "required": true,
       "types": [
         {
+          "type": "annot_stmt",
+          "named": true
+        },
+        {
           "type": "decl_stmt",
+          "named": true
+        },
+        {
+          "type": "do_stmt",
           "named": true
         },
         {
@@ -624,17 +674,7 @@
   {
     "type": "string",
     "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": false,
-      "types": [
-        {
-          "type": "char",
-          "named": true
-        }
-      ]
-    }
+    "fields": {}
   },
   {
     "type": "type",
@@ -657,32 +697,6 @@
       "types": [
         {
           "type": "type_variables",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "type_binder",
-    "named": true,
-    "fields": {
-      "arguments": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "argument_list",
-            "named": true
-          }
-        ]
-      }
-    },
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "type",
           "named": true
         }
       ]
@@ -806,10 +820,6 @@
     "named": false
   },
   {
-    "type": "->",
-    "named": false
-  },
-  {
     "type": ".",
     "named": false
   },
@@ -834,23 +844,11 @@
     "named": false
   },
   {
+    "type": "@",
+    "named": false
+  },
+  {
     "type": "[",
-    "named": false
-  },
-  {
-    "type": "\\\"",
-    "named": false
-  },
-  {
-    "type": "\\\\",
-    "named": false
-  },
-  {
-    "type": "\\n",
-    "named": false
-  },
-  {
-    "type": "\\r",
     "named": false
   },
   {
@@ -860,6 +858,14 @@
   {
     "type": "abstract",
     "named": false
+  },
+  {
+    "type": "atom_arrow_identifier",
+    "named": true
+  },
+  {
+    "type": "atom_identifier",
+    "named": true
   },
   {
     "type": "axiom",
@@ -878,12 +884,20 @@
     "named": false
   },
   {
+    "type": "do",
+    "named": false
+  },
+  {
     "type": "free",
     "named": false
   },
   {
     "type": "identifier",
     "named": true
+  },
+  {
+    "type": "import",
+    "named": false
   },
   {
     "type": "infixl",
@@ -894,11 +908,11 @@
     "named": false
   },
   {
-    "type": "initial",
-    "named": true
+    "type": "input",
+    "named": false
   },
   {
-    "type": "input",
+    "type": "lassoc",
     "named": false
   },
   {
@@ -946,16 +960,16 @@
     "named": false
   },
   {
+    "type": "rassoc",
+    "named": false
+  },
+  {
     "type": "sort",
     "named": false
   },
   {
     "type": "strict",
     "named": false
-  },
-  {
-    "type": "subsequent",
-    "named": true
   },
   {
     "type": "term",
