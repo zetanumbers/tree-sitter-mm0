@@ -19,17 +19,16 @@ export default grammar({
     source_file: $ => repeat($.statement),
 
     statement: $ => choice(
+      $.sort_stmt,
       $.decl_stmt,
-      $.def_stmt,
       $.notation_stmt,
-      $.inout_stmt
+      $.inout_stmt,
     ),
 
     sort_stmt: $ => seq(
       optional('pure'), optional('strict'), optional('provable'), optional('free'),
       'sort', field('name', $.identifier), ';',
     ),
-
 
     decl_stmt: $ => seq(
       optional($.visibility), $.decl_kind, $.identifier, repeat(seq($.binder)),
@@ -49,13 +48,13 @@ export default grammar({
 
     sexpr: $ => choice($.atom, $.list, $.number, $.string, $.bool, '#undef', $.formula, seq("'", $.sexpr), seq(',', $.sexpr)),
     atom: $ => choice(seq($.initial, repeat($.subsequent)), '+', '-', '...', seq('->', repeat($.subsequent))),
-    initial: $ =>    [a-z] | [A-Z] |         [!%&*/:<=>?^_~]
-    subsequent: $ => [a-z] | [A-Z] | [0-9] | [!%&*/:<=>?^_~+-.@]
-    list: $ => '(' list_inner ')' | '[' list_inner ']'
-    list_inner: $ => (sexpr)* | (sexpr)+ '.' sexpr
-    number: $ => [0-9]+ | 0[xX][0-9a-fA-F]+
-    string: $ => '"' (char)* '"'
-    char: $ => <any character other than " and \ > | '\"' | '\\' | '\n' | '\r'
+    initial: $ => /[a-zA-Z!%&*/:<=>?\^_~]/,
+    subsequent: $ => /[a-zA-Z0-9!%&*/:<=>?\^_~+\-.@]/,
+    list: $ => choice(seq('(', optional($.list_inner), ')'), seq('[', optional($.list_inner), ']')),
+    list_inner: $ => choice(repeat1($.sexpr), seq(repeat1($.sexpr), '.', $.sexpr)),
+    number: $ => choice(/[0-9]+/, /0[xX][0-9a-fA-F]+/),
+    string: $ => seq('"', repeat($.char), '"'),
+    char: $ => choice(/[^\"\\]/, '\\"', '\\\\', '\\n', '\\r'),
     bool: $ => choice('#t', '#f'),
 
     term_stmt: $ => seq('term', field('name', $.identifier), repeat($.type_binder), ':', $.arrow_type, ';'),
@@ -126,7 +125,7 @@ export default grammar({
     argument_list: $ => repeat1($.identifier),
 
     unbalanced_math_string: $ => seq('$', repeat($.unbalanced_math_lexeme), '$'),
-    unbalanced_math_lexeme: $ => /[^a-zA-Z\d\s\$]/,
+    unbalanced_math_lexeme: $ => /[^a-zA-Z0-9\s\$]/,
 
     math_string: $ => seq('$', repeat($.math_token), '$'),
     math_token: $ => choice(
@@ -135,10 +134,10 @@ export default grammar({
       prec(1, seq('(', repeat($.math_token), ')')),
       $.other_math_token,
     ),
-    other_math_token: $ => /[^a-zA-Z\d\s_\$\(\)]+/,
+    other_math_token: $ => /[^a-zA-Z0-9\s_\$\(\)]+/,
 
     identifier: $ => /[_\p{XID_Start}][_\p{XID_Continue}]*/,
-    number: $ => /\d+/,
+    number: $ => /[0-9]+/,
 
     comment: $ => seq(
       '--',
