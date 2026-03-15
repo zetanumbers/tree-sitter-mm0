@@ -15,6 +15,12 @@ export default grammar({
     $.comment,
   ],
 
+  supertypes: $ => [
+    $.sexpr,
+    $.list_inner,
+    $.math_token,
+  ],
+
   rules: {
     source_file: $ => repeat($.statement),
 
@@ -51,20 +57,26 @@ export default grammar({
 
     annot_stmt: $ => seq('@', $.sexpr, $.statement),
     
-    do_stmt: $ => seq('do', $.sexpr, ';'),
+    do_stmt: $ => prec(5, seq('do', $.sexpr, ';')),
+    s_var_decl: $ => $.atom_identifier,
 
     sexpr: $ => choice(
-      $.atom,
+      $.atom_identifier,
+      $.atom_arrow_identifier,
+      $.atom_other,
       $.list,
       $.number,
       $.string,
       $.bool,
-      '#undef',
+      $.undef,
       $.formula,
-      seq("'", $.sexpr),
-      seq(',', $.sexpr),
+      $.quote,
+      $.unquote,
     ),
-    atom: $ => choice($.atom_identifier, '+', '-', '...', $.atom_arrow_identifier),
+    quote: $ => seq("'", $.sexpr),
+    unquote: $ => seq(',', $.sexpr),
+
+    atom_other: $ => choice('+', '-', '...'),
     atom_identifier: $ => /[a-zA-Z!%&*/:<=>?\^_~][a-zA-Z0-9!%&*/:<=>?\^_~+\-.@]*/,
     atom_arrow_identifier: $ => /->[a-zA-Z0-9!%&*/:<=>?\^_~+\-.@]*/,
     list: $ => choice(
@@ -72,11 +84,17 @@ export default grammar({
       seq('[', optional($.list_inner), ']'),
       seq('{', optional($.list_inner), '}'),
     ),
-    list_inner: $ => seq(field('head', $.sexpr), repeat($.sexpr), optional(seq('.', $.sexpr)), optional(seq('@', $.list_inner))),
+    list_inner: $ => choice(prec(1, $.def_inner), prec(1, $.fn_inner), $.list_inner_other),
+    list_inner_other: $ => seq(field('head', $.sexpr), repeat($.sexpr), optional(seq('.', $.sexpr)), optional(seq('@', $.list_inner))),
+
+    def_inner: $ => seq('def', choice(field('name', $.atom_identifier), seq('(', field('name', $.atom_identifier), repeat($.s_var_decl), ')')), $.list_inner),
+    fn_inner: $ => seq('fn', choice($.s_var_decl, seq('(', repeat($.s_var_decl), ')')), $.list_inner),
+
     number: $ => choice(/[0-9]+/, /0[xX][0-9a-fA-F]+/),
     string: $ => seq('"', repeat($._char), '"'),
     _char: $ => token.immediate(choice(/[^"\\]/, '\\"', '\\\\', '\\n', '\\r')),
     bool: $ => choice('#t', '#f'),
+    undef: $ => '#undef',
 
     type: $ => seq(field('sort_name', $.identifier), optional($.type_variables)),
     type_variables: $ => repeat1($.identifier),

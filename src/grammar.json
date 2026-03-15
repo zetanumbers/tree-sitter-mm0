@@ -428,28 +428,44 @@
       ]
     },
     "do_stmt": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "STRING",
-          "value": "do"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "sexpr"
-        },
-        {
-          "type": "STRING",
-          "value": ";"
-        }
-      ]
+      "type": "PREC",
+      "value": 5,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "do"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "sexpr"
+          },
+          {
+            "type": "STRING",
+            "value": ";"
+          }
+        ]
+      }
+    },
+    "s_var_decl": {
+      "type": "SYMBOL",
+      "name": "atom_identifier"
     },
     "sexpr": {
       "type": "CHOICE",
       "members": [
         {
           "type": "SYMBOL",
-          "name": "atom"
+          "name": "atom_identifier"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "atom_arrow_identifier"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "atom_other"
         },
         {
           "type": "SYMBOL",
@@ -468,48 +484,52 @@
           "name": "bool"
         },
         {
-          "type": "STRING",
-          "value": "#undef"
+          "type": "SYMBOL",
+          "name": "undef"
         },
         {
           "type": "SYMBOL",
           "name": "formula"
         },
         {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "STRING",
-              "value": "'"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "sexpr"
-            }
-          ]
+          "type": "SYMBOL",
+          "name": "quote"
         },
         {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "STRING",
-              "value": ","
-            },
-            {
-              "type": "SYMBOL",
-              "name": "sexpr"
-            }
-          ]
+          "type": "SYMBOL",
+          "name": "unquote"
         }
       ]
     },
-    "atom": {
-      "type": "CHOICE",
+    "quote": {
+      "type": "SEQ",
       "members": [
         {
-          "type": "SYMBOL",
-          "name": "atom_identifier"
+          "type": "STRING",
+          "value": "'"
         },
+        {
+          "type": "SYMBOL",
+          "name": "sexpr"
+        }
+      ]
+    },
+    "unquote": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": ","
+        },
+        {
+          "type": "SYMBOL",
+          "name": "sexpr"
+        }
+      ]
+    },
+    "atom_other": {
+      "type": "CHOICE",
+      "members": [
         {
           "type": "STRING",
           "value": "+"
@@ -521,10 +541,6 @@
         {
           "type": "STRING",
           "value": "..."
-        },
-        {
-          "type": "SYMBOL",
-          "name": "atom_arrow_identifier"
         }
       ]
     },
@@ -617,6 +633,31 @@
       ]
     },
     "list_inner": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "PREC",
+          "value": 1,
+          "content": {
+            "type": "SYMBOL",
+            "name": "def_inner"
+          }
+        },
+        {
+          "type": "PREC",
+          "value": 1,
+          "content": {
+            "type": "SYMBOL",
+            "name": "fn_inner"
+          }
+        },
+        {
+          "type": "SYMBOL",
+          "name": "list_inner_other"
+        }
+      ]
+    },
+    "list_inner_other": {
       "type": "SEQ",
       "members": [
         {
@@ -675,6 +716,102 @@
               "type": "BLANK"
             }
           ]
+        }
+      ]
+    },
+    "def_inner": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "def"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "FIELD",
+              "name": "name",
+              "content": {
+                "type": "SYMBOL",
+                "name": "atom_identifier"
+              }
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "("
+                },
+                {
+                  "type": "FIELD",
+                  "name": "name",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "atom_identifier"
+                  }
+                },
+                {
+                  "type": "REPEAT",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "s_var_decl"
+                  }
+                },
+                {
+                  "type": "STRING",
+                  "value": ")"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "list_inner"
+        }
+      ]
+    },
+    "fn_inner": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "fn"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "s_var_decl"
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "("
+                },
+                {
+                  "type": "REPEAT",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "s_var_decl"
+                  }
+                },
+                {
+                  "type": "STRING",
+                  "value": ")"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "list_inner"
         }
       ]
     },
@@ -742,6 +879,10 @@
           "value": "#f"
         }
       ]
+    },
+    "undef": {
+      "type": "STRING",
+      "value": "#undef"
     },
     "type": {
       "type": "SEQ",
@@ -1327,6 +1468,10 @@
   "precedences": [],
   "externals": [],
   "inline": [],
-  "supertypes": [],
+  "supertypes": [
+    "sexpr",
+    "list_inner",
+    "math_token"
+  ],
   "reserved": {}
 }

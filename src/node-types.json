@@ -1,5 +1,95 @@
 [
   {
+    "type": "list_inner",
+    "named": true,
+    "subtypes": [
+      {
+        "type": "def_inner",
+        "named": true
+      },
+      {
+        "type": "fn_inner",
+        "named": true
+      },
+      {
+        "type": "list_inner_other",
+        "named": true
+      }
+    ]
+  },
+  {
+    "type": "math_token",
+    "named": true,
+    "subtypes": [
+      {
+        "type": "identifier",
+        "named": true
+      },
+      {
+        "type": "math_token_list",
+        "named": true
+      },
+      {
+        "type": "number",
+        "named": true
+      },
+      {
+        "type": "other_math_token",
+        "named": true
+      }
+    ]
+  },
+  {
+    "type": "sexpr",
+    "named": true,
+    "subtypes": [
+      {
+        "type": "atom_arrow_identifier",
+        "named": true
+      },
+      {
+        "type": "atom_identifier",
+        "named": true
+      },
+      {
+        "type": "atom_other",
+        "named": true
+      },
+      {
+        "type": "bool",
+        "named": true
+      },
+      {
+        "type": "formula",
+        "named": true
+      },
+      {
+        "type": "list",
+        "named": true
+      },
+      {
+        "type": "number",
+        "named": true
+      },
+      {
+        "type": "quote",
+        "named": true
+      },
+      {
+        "type": "string",
+        "named": true
+      },
+      {
+        "type": "undef",
+        "named": true
+      },
+      {
+        "type": "unquote",
+        "named": true
+      }
+    ]
+  },
+  {
     "type": "annot_stmt",
     "named": true,
     "fields": {},
@@ -38,23 +128,9 @@
     }
   },
   {
-    "type": "atom",
+    "type": "atom_other",
     "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": false,
-      "types": [
-        {
-          "type": "atom_arrow_identifier",
-          "named": true
-        },
-        {
-          "type": "atom_identifier",
-          "named": true
-        }
-      ]
-    }
+    "fields": {}
   },
   {
     "type": "binder",
@@ -185,6 +261,36 @@
     }
   },
   {
+    "type": "def_inner",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "atom_identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "list_inner",
+          "named": true
+        },
+        {
+          "type": "s_var_decl",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "delimiter_stmt",
     "named": true,
     "fields": {},
@@ -209,6 +315,25 @@
       "types": [
         {
           "type": "sexpr",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "fn_inner",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "list_inner",
+          "named": true
+        },
+        {
+          "type": "s_var_decl",
           "named": true
         }
       ]
@@ -345,7 +470,7 @@
     }
   },
   {
-    "type": "list_inner",
+    "type": "list_inner_other",
     "named": true,
     "fields": {
       "head": {
@@ -384,33 +509,6 @@
       "types": [
         {
           "type": "math_token",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "math_token",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "identifier",
-          "named": true
-        },
-        {
-          "type": "math_token_list",
-          "named": true
-        },
-        {
-          "type": "number",
-          "named": true
-        },
-        {
-          "type": "other_math_token",
           "named": true
         }
       ]
@@ -550,39 +648,30 @@
     }
   },
   {
-    "type": "sexpr",
+    "type": "quote",
     "named": true,
     "fields": {},
     "children": {
       "multiple": false,
-      "required": false,
+      "required": true,
       "types": [
-        {
-          "type": "atom",
-          "named": true
-        },
-        {
-          "type": "bool",
-          "named": true
-        },
-        {
-          "type": "formula",
-          "named": true
-        },
-        {
-          "type": "list",
-          "named": true
-        },
-        {
-          "type": "number",
-          "named": true
-        },
         {
           "type": "sexpr",
           "named": true
-        },
+        }
+      ]
+    }
+  },
+  {
+    "type": "s_var_decl",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
         {
-          "type": "string",
+          "type": "atom_identifier",
           "named": true
         }
       ]
@@ -770,6 +859,21 @@
     }
   },
   {
+    "type": "unquote",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "sexpr",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "var_decl",
     "named": true,
     "fields": {},
@@ -799,10 +903,6 @@
   },
   {
     "type": "#t",
-    "named": false
-  },
-  {
-    "type": "#undef",
     "named": false
   },
   {
@@ -906,6 +1006,10 @@
     "named": false
   },
   {
+    "type": "fn",
+    "named": false
+  },
+  {
     "type": "free",
     "named": false
   },
@@ -999,6 +1103,10 @@
   },
   {
     "type": "unbalanced_math_lexeme",
+    "named": true
+  },
+  {
+    "type": "undef",
     "named": true
   },
   {
