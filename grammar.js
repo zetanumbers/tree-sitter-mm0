@@ -36,7 +36,7 @@ export default grammar({
     ),
 
     decl_stmt: $ => seq(
-      optional($.visibility), $.decl_kind, $.identifier, repeat(seq($.binder)),
+      optional($.visibility), $.decl_kind, field('name', $.identifier), repeat(seq($.binder)),
       optional(seq(':', $.arrow_type)), optional(seq('=', $.sexpr)), ';'
     ),
     visibility: $ => choice('pub', 'abstract', 'local'),
@@ -53,7 +53,8 @@ export default grammar({
     
     do_stmt: $ => seq('do', $.sexpr, ';'),
 
-    sexpr: $ => choice($.atom,
+    sexpr: $ => choice(
+      $.atom,
       $.list,
       $.number,
       $.string,
@@ -71,7 +72,7 @@ export default grammar({
       seq('[', optional($.list_inner), ']'),
       seq('{', optional($.list_inner), '}'),
     ),
-    list_inner: $ => seq(repeat1($.sexpr), optional(seq('.', $.sexpr)), optional(seq('@', $.list_inner))),
+    list_inner: $ => seq(field('head', $.sexpr), repeat($.sexpr), optional(seq('.', $.sexpr)), optional(seq('@', $.list_inner))),
     number: $ => choice(/[0-9]+/, /0[xX][0-9a-fA-F]+/),
     string: $ => seq('"', repeat($._char), '"'),
     _char: $ => token.immediate(choice(/[^"\\]/, '\\"', '\\\\', '\\n', '\\r')),
