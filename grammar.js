@@ -87,8 +87,8 @@ export default grammar({
     list_inner: $ => choice(prec(1, $.def_inner), prec(1, $.fn_inner), $.list_inner_other),
     list_inner_other: $ => seq(field('head', $.sexpr), repeat($.sexpr), optional(seq('.', $.sexpr)), optional(seq('@', $.list_inner))),
 
-    def_inner: $ => seq('def', choice(field('name', $.atom_identifier), seq('(', field('name', $.atom_identifier), repeat($.s_var_decl), ')')), $.list_inner),
-    fn_inner: $ => seq('fn', choice($.s_var_decl, seq('(', repeat($.s_var_decl), ')')), $.list_inner),
+    def_inner: $ => seq('def', choice(field('name', $.atom_identifier), seq('(', field('name', $.atom_identifier), repeat(choice($.s_var_decl, '.')), ')')), repeat($.sexpr), optional(seq('@', $.list_inner))),
+    fn_inner: $ => seq('fn', choice($.s_var_decl, seq('(', repeat(choice($.s_var_decl, '.')), ')')), repeat($.sexpr), optional(seq('@', $.list_inner))),
 
     number: $ => choice(/[0-9]+/, /0[xX][0-9a-fA-F]+/),
     string: $ => seq('"', repeat($._char), '"'),

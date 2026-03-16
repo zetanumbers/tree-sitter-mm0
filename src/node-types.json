@@ -277,7 +277,7 @@
     },
     "children": {
       "multiple": true,
-      "required": true,
+      "required": false,
       "types": [
         {
           "type": "list_inner",
@@ -285,6 +285,10 @@
         },
         {
           "type": "s_var_decl",
+          "named": true
+        },
+        {
+          "type": "sexpr",
           "named": true
         }
       ]
@@ -326,7 +330,7 @@
     "fields": {},
     "children": {
       "multiple": true,
-      "required": true,
+      "required": false,
       "types": [
         {
           "type": "list_inner",
@@ -334,6 +338,10 @@
         },
         {
           "type": "s_var_decl",
+          "named": true
+        },
+        {
+          "type": "sexpr",
           "named": true
         }
       ]
