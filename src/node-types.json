@@ -269,6 +269,10 @@
         "required": true,
         "types": [
           {
+            "type": "atom_arrow_identifier",
+            "named": true
+          },
+          {
             "type": "atom_identifier",
             "named": true
           }
