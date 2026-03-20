@@ -1,0 +1,16 @@
+[[language]]
+name = "metamath-zero"
+scope = "source.mm0"
+language-servers = [ "mm0-rs" ]
+file-types = ["mm0", "mm1"]
+comment-tokens = "--"
+indent = { tab-width = 2, unit = "  " }
+grammar = "metamath_zero"
+
+[language-server.mm0-rs]
+command = "mm0-rs"
+args = ["server"]
+
+[[grammar]]
+name = "metamath_zero"
+source = { git = "https://github.com/zetanumbers/tree-sitter-mm0.git", rev = "e9fac61d41c85b480c07a050cdf2d86900414b55" }
