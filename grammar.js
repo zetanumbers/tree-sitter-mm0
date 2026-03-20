@@ -85,11 +85,12 @@ export default grammar({
       seq('{', optional($.list_inner), '}'),
     ),
     list_inner: $ => choice(prec(1, $.def_inner), prec(1, $.fn_inner), $.list_inner_other),
-    list_inner_other: $ => seq(field('head', $.sexpr), repeat($.sexpr), optional(seq('.', $.sexpr)), optional(seq('@', $.list_inner))),
+    list_inner_other: $ => seq(field('head', choice($.list_inner_head_syntax, $.sexpr)), repeat($.sexpr), optional(seq('.', $.sexpr)), optional(seq('@', $.list_inner))),
+    list_inner_head_syntax: $ => choice('begin', 'def', 'fn', 'quote', 'unquote', 'if', 'focus', 'let', 'letrec', 'set-merge-strategy', 'match', 'match-fn', 'match-fn*'),
 
-    def_inner: $ => seq('def', $._def_inner_binder, repeat($.sexpr), optional(seq('@', $.list_inner))),
+    def_inner: $ => prec(1, seq('def', $._def_inner_binder, repeat($.sexpr), optional(seq('@', $.list_inner)))),
     _def_inner_binder: $ => choice(field('name', choice($.atom_identifier, $.atom_arrow_identifier)), seq('(', $._def_inner_binder, repeat(choice($.s_var_decl, '.')), ')')),
-    fn_inner: $ => seq('fn', choice($.s_var_decl, seq('(', repeat(choice($.s_var_decl, '.')), ')')), repeat($.sexpr), optional(seq('@', $.list_inner))),
+    fn_inner: $ => prec(1, seq('fn', choice($.s_var_decl, seq('(', repeat(choice($.s_var_decl, '.')), ')')), repeat($.sexpr), optional(seq('@', $.list_inner)))),
 
     number: $ => choice(/[0-9]+/, /0[xX][0-9a-fA-F]+/),
     string: $ => seq('"', repeat($._char), '"'),
